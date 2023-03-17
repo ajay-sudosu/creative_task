@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>List of Items</title>
+    <style>
+    a {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #0077cc;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: bold;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+a:hover {
+  background-color: #005299;
+}
+
+      /* CSS styles */
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+      }
+      ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      li {
+        margin: 10px 0;
+        padding: 5px 10px;
+        background-color: #fff;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      }
+    </style>
+  </head>
+  <body>
+  <a href="/add-item">Add Item</a>
+
+   {% csrf_token %}
+    <h1>List of Items</h1>
+   <ul id="sortable">
+    {% for item in items %}
+      <li id="{{ item.id }}">{{ item.name }}</li>
+    {% endfor %}
+     {% for i in latest_items %}
+       <li id="{{ i.id }}">{{ i.name }}</li>
+       {% endfor %}
+  </ul>
+
+  </body>
+</html>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.13.0/jquery-ui.min.js"></script>
+
+<script>
+$(function() {
+    var csrftoken = $('[name="csrfmiddlewaretoken"]').val(); // define csrftoken variable
+    $("#sortable").sortable({
+        update: function(event, ui) {
+            // AJAX call to update the order in the database
+            var order = $(this).sortable("toArray");
+            $.ajax({
+                url: "update_order",
+                type: "POST",
+                beforeSend: function(xhr) {
+                    xhr.setRequestHeader('X-CSRFToken', csrftoken);
+                },
+                data: {
+                    order: order
+                        },
+                success: function(response) {
+                    // Handle success response
+                },
+                error: function(xhr, status, error) {
+                    console.log(error);
+                    // Handle error response
+                }
+            });
+        }
+    });
+    $("#sortable").disableSelection();
+});
+</script>
