@@ -4,6 +4,6 @@ Clone the repo and follow the below steps to run the application:
     pip install -r requirements.txt
   
  2. Create migrations by running the following command in terminal(also in the root directory):
-    python manage.py makemigrations
+    python manage.py makemigrations app_task authentication
     python manage.py migrate
    
